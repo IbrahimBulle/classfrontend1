@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Greenhouse Control</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-leaf"></i> Smart Greenhouse</h1>
+            <div class="status-indicator">
+                <span class="connection-status" id="connection-status">Connecting...</span>
+                <div class="status-dot" id="status-dot"></div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <div class="sensor-readings">
+                <h2><i class="fas fa-chart-line"></i> Sensor Data</h2>
+                <div class="sensor-grid">
+                    <div class="sensor-card">
+                        <div class="sensor-icon temp-icon">
+                            <i class="fas fa-temperature-high"></i>
+                        </div>
+                        <h3>Temperature</h3>
+                        <div class="sensor-value" id="temperature">--°C</div>
+                        <div class="sensor-range">Range: 15°C - 30°C</div>
+                    </div>
+
+                    <div class="sensor-card">
+                        <div class="sensor-icon humidity-icon">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <h3>Humidity</h3>
+                        <div class="sensor-value" id="humidity">--%</div>
+                        <div class="sensor-range">Range: 40% - 70%</div>
+                    </div>
+
+                    <div class="sensor-card">
+                        <div class="sensor-icon moisture-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h3>Soil Moisture</h3>
+                        <div class="sensor-value" id="moisture">--%</div>
+                        <div class="sensor-range">Range: 30% - 60%</div>
+                    </div>
+
+                    <div class="sensor-card">
+                        <div class="sensor-icon light-icon">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                        <h3>Light Intensity</h3>
+                        <div class="sensor-value" id="light">-- lux</div>
+                        <div class="sensor-range">Range: 500 - 1500 lux</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actuator-controls">
+                <h2><i class="fas fa-sliders-h"></i> Actuator Controls</h2>
+                <div class="control-grid">
+                    <div class="control-card">
+                        <h3>Ventilation Fans</h3>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="fan-toggle" class="toggle-input">
+                            <label for="fan-toggle" class="toggle-label"></label>
+                            <span class="toggle-status" id="fan-status">status</span>
+                        </div>
+                        <div class="control-info">
+                            <p>Automatically turns on when temperature > 28°C</p>
+                        </div>
+                    </div>
+
+                    <div class="control-card">
+                        <h3>Water Pump</h3>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="pump-toggle" class="toggle-input">
+                            <label for="pump-toggle" class="toggle-label"></label>
+                            <span class="toggle-status" id="pump-status">status</span>
+                        </div>
+                        <div class="control-info">
+                            <p>Automatically turns on when soil moisture < 35%</p>
+                        </div>
+                    </div>
+
+                    <div class="control-card">
+                        <h3>Grow Lights</h3>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="light-toggle" class="toggle-input">
+                            <label for="light-toggle" class="toggle-label"></label>
+                            <span class="toggle-status" id="light-status">status</span>
+                        </div>
+                        <div class="control-info">
+                            <p>Automatically turns on when light < 300 lux</p>
+                        </div>
+                    </div>
+
+                    <div class="control-card">
+                        <h3>Shade Net</h3>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="shade-toggle" class="toggle-input">
+                            <label for="shade-toggle" class="toggle-label"></label>
+                            <span class="toggle-status" id="shade-status">status</span>
+                        </div>
+                        <div class="control-info">
+                            <p>Automatically turns on when light > 1800 lux</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification-center">
+            <h2><i class="fas fa-bell"></i> Notifications</h2>
+            <div class="notification-list" id="notification-list">
+                <div class="notification welcome">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Welcome to your Smart Greenhouse dashboard!</p>
+                    <span class="notification-time">Just now</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="alert-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-icon">
+                <i class="fas fa-exclamation-triangle" id="modal-icon"></i>
+            </div>
+            <h3 id="modal-title">Alert</h3>
+            <p id="modal-message">This is an alert message.</p>
+            <button class="modal-button" id="modal-button">OK</button>
+        </div>
+    </div>
+
+   <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
