@@ -1,5 +1,8 @@
 const connectionStatus = document.querySelector('.connection-status')
+const readings  = document.querySelector('.readings')
 const statusDot = document.querySelector('.status-dot ')
+const container = document.querySelector('.container1')
+const childrenArray=Array.from(container.children)
 const socket = io('https://classbackend-62k7.onrender.com/', {
   withCredentials: true,
   extraHeaders: {
@@ -7,7 +10,6 @@ const socket = io('https://classbackend-62k7.onrender.com/', {
   }
 });
 
-// Once connected, listen for incoming data
 socket.on("connect", () => {
     console.log("Connected to server");
      connectionStatus.textContent = 'Connected';  
@@ -17,17 +19,40 @@ socket.on("connect", () => {
 
 // Handle incoming sensor data
 socket.on("lastReading", (data) => {
-    console.log("Received data: ", data);
-
-    // Update sensor readings in the UI
+    // console.log("Received data: ", data);
+// console.log(data)
     document.getElementById('temperature').textContent = `${data.temp} °C`;
     document.getElementById('humidity').textContent = `${data.humidity} %`;
     document.getElementById('moisture').textContent = `${data.soil_moisture} %`;
     document.getElementById('light').textContent = `${data.light_intensity} lux`;
 
-    // Call to update actuator state based on received data
     handleActuators(data);
 });
+
+socket.on("latestFive", (data) => {
+//   console.log(data); 
+
+  childrenArray.forEach((cell, index) => {
+    const rowIndex = Math.floor(index / 4); // row iko
+    const colIndex = index % 4;             // column iko
+    const rowData = data[rowIndex];
+
+    if (rowData) {
+      let value = "";
+      switch (colIndex) {
+        case 0: value = rowData.temp; break;
+        case 1: value = rowData.humidity; break;
+        case 2: value = rowData.soil_moisture; break;
+        case 3: value = rowData.light_intensity; break;
+      }
+      cell.textContent = value;
+    } else {
+      cell.textContent = ""; 
+    }
+  });
+});
+
+
 
 // DOM elements for actuators
 const fanToggle = document.getElementById('fan-toggle');
@@ -143,21 +168,22 @@ shadeToggle.addEventListener('change', () => {
 
 // Fetch sensor data from backend periodically (for initial state and periodic updates)
 function updateAll() {
-    fetch('https://classbackend-62k7.onrender.com/api/latest')
+    fetch('https://classbackend-62k7.onrender.com/')
         .then(response => response.json())
         .then(data => {
-            document.getElementById('temperature').textContent = `${data.temp} °C`;
-            document.getElementById('humidity').textContent = `${data.humidity} %`;
-            document.getElementById('moisture').textContent = `${data.soil_moisture} %`;
-            document.getElementById('light').textContent = `${data.light_intensity} lux`;
-
+            
+            document.getElementById('temperature').textContent = `${data[data.length-1].temp} °C`;
+            document.getElementById('humidity').textContent = `${data[data.length-1].humidity} %`;
+            document.getElementById('moisture').textContent = `${data[data.length-1].soil_moisture} %`;
+            document.getElementById('light').textContent = `${data[data.length-1].light_intensity} lux`;
             // Update actuator control based on sensor readings
-            // handleActuators(data);
         })
         .catch(error => {
             console.error("Error fetching data:", error);
         });
 }
+
+setInterval(()=>fetch('https://classbackend-62k7.onrender.com/api/latest'),10000)
 
 // Periodically fetch and update sensor data
 setInterval(updateAll, 10000);  // Update every 10 seconds
